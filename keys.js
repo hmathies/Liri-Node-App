@@ -1,5 +1,4 @@
 
-console.log('this is loaded');
 
 var twitterKeys = {
   consumer_key: '<input here>',
@@ -8,4 +7,19 @@ var twitterKeys = {
   access_token_secret: '<input here>',
 }
 
-module.exports = twitterKeys;
+
+var spotifyKeys = {
+    client_id: '',
+    client_secret: ''
+}
+
+var omdbKey = {
+    apiKey: ''
+}
+
+
+module.exports = {
+    twitterKeys,
+    spotifyKeys,
+    omdbKey
+}
