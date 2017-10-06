@@ -1,6 +1,16 @@
-/* At the top of the `liri.js` file, write the code you need to grab the data from keys.js. Then store the keys in a variable.
+// the code to grab the data from keys.js. Then store the keys in a variable.
+var fs = require('fs');
+var Twitter = require('twitter');
+var Spotify = require('node-spotify-api');
+var request = require('request');
+var keys = require('./keys.js');
 
-8. Make it so liri.js can take in one of the following commands:
+var action = process.argv[2];
+var value = process.argv[3];
+
+
+
+/* 8. Make it so liri.js can take in one of the following commands:
 
    * `my-tweets`
 
@@ -32,17 +42,6 @@
 
    * If no song is provided then your program will default to "The Sign" by Ace of Base.
    
-   * You will utilize the [node-spotify-api](https://www.npmjs.com/package/node-spotify-api) package in order to retrieve song information from the Spotify API.
-   
-   * Like the Twitter API, the Spotify API requires you sign up as a developer to generate the necessary credentials. You can follow these steps in order to generate a **client id** and **client secret**:
-
-   * Step One: Visit <https://developer.spotify.com/my-applications/#!/>
-   
-   * Step Two: Either login to your existing Spotify account or create a new one (a free account is fine) and log in.
-
-   * Step Three: Once logged in, navigate to <https://developer.spotify.com/my-applications/#!/applications/create> to register a new application to be used with the Spotify API. You can fill in whatever you'd like for these fields. When finished, click the "complete" button.
-
-   * Step Four: On the next screen, scroll down to where you see your client id and client secret. Copy these values down somewhere, you'll need them to use the Spotify API and the [node-spotify-api package](https://www.npmjs.com/package/node-spotify-api). See the 
 
 3. `node liri.js movie-this '<movie name here>'`
 
@@ -65,7 +64,6 @@
      
      * It's on Netflix!
    
-   * You'll use the request package to retrieve data from the OMDB API. Like all of the in-class activities, the OMDB API requires an API key. You may use `40e9cece`.
 
 4. `node liri.js do-what-it-says`
    
