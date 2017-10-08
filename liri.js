@@ -65,7 +65,6 @@ function getMyTweets() {
 
 };
 
-
 /*
 -----------------------------------------------------------Spotify---------------------------------------------------------------------
 
@@ -89,94 +88,114 @@ function getMyTweets() {
 
 function spotifyThisSong(value) {
 
-        var spotify = new Spotify({
-            id: keys.spotifyKeys.client_id,
-            secret: keys.spotifyKeys.client_secret
-        });
+    var action = process.argv[2];
+    var value = process.argv[3];
 
-        if (value === undefined) {
-            value = 'The Sign';
-        }
+    var spotify = new Spotify({
+        id: keys.spotifyKeys.client_id,
+        secret: keys.spotifyKeys.client_secret,
+    });
 
-        
-        spotify.search({
-            type: 'track',
-            query: value,
-            limit: 1
-        }, function(err, data) {
+    if (value === undefined) {
+        value = 'The Sign';
+    }
 
-            if (err) {
-                return console.log('Error occurred: ' + err);
-            }
+    
 
-            console.log(data);
+/*things to look into:
+  1.) why isn't the full json data being displayed
+  2.) look into the items object
+  3.) look into why it isn't grabbing the user input ~~ perhaps need to declare it
+  4.) Do I need to do a request?
+*/
 
-        });
+    spotify.search({
+        type: 'track',
+        query: value,
+        limit: 1
+    }, function(err, data){
+        console.log('I got ' + data.tracks.total + ' results!');
 
-
-        /*
-
-        ----------------------------------------------------------OMDB-----------------------------------------------------------------
-         */
-        //function so that Liri can take in the 'movie-this' command
-        function movieThis() {
-
-            if (value === undefined) {
-                value = 'Mr. Nobody';
-            }
-            // We then run the request module on a URL with a JSON
-            request("http://www.omdbapi.com/?t=" + value + "&y=&plot=short&apikey=" + keys.omdbKey.apiKey, function(error, data, body) {
-
-                // If there were no errors and the response code was 200 (i.e. the request was successful)...
-                if (!error && data.statusCode === 200) {
-                    var movie = JSON.parse(body);
-                  
-                    console.log('The Title of the movie is: ' + movie.Title);
-                    console.log('The Year the movie came out is: ' + movie.Year);
-                    console.log("The movie's rating is: " + movie.Rated);
-                    
-                    var rating = 'no rating available';
-                    for (i in movie.Ratings) {
-                        if (movie.Ratings[i].Source == 'Rotten Tomatoes') {
-                            rating = movie.Ratings[i].Value;
-                            break;
-                        }
-
-                    }
-                    console.log('Rotten Tomatoes Rating of the movie is: ' + rating);
-                    console.log('The country where the movie was produced is: ' + movie.Country);
-                    console.log('The Language of the movie is: ' + movie.Language);
-                    console.log('The Plot of the movie is: ' + movie.Plot);
-                    console.log('The Actors in the movie are: ' + movie.Actors);
-                }
-            });
-
-
-        };
-
-        /*
+      if (!err) {
          
-        -------------------------------------------------do-what-it-says-------------------------------------------------------------------  
+            var track = data.tracks.items[0];
+            console.log(track);
+            // Print some information about the results
 
-        4. `node liri.js do-what-it-says`
-           
-           * Using the `fs` Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
-             
-             * It should run `spotify-this-song` for "I Want it That Way," as follows the text in `random.txt`.
-             
-             * Feel free to change the text in that document to test out the feature for other commands.
+            return console.log(`\nArtists: {track.artists[0].name} \nTrack: {value} \nPreview: {track.external_urls.spotify} \nAlbum: {track.album.name}`)
+        }else {
+          console.log('Song not found. Try another');
 
-           */
-        //function so that Liri can take in the 'do-what-it-says' command
-        function doWhatItSays() {
-            fs.readFile('random.txt', 'utf8', function(err, contents) {
-                var args = contents.split(',');
-                action = args[0];
-                value = args[1];
-                route();
-            });
+        }
+ 
+    });
 
-        };
-      }
+  }
 
-        //~end of Liri bot code
+
+
+/*
+
+----------------------------------------------------------OMDB-----------------------------------------------------------------
+ */
+//function so that Liri can take in the 'movie-this' command
+function movieThis() {
+
+    if (value === undefined) {
+        value = 'Mr. Nobody';
+    }
+    // We then run the request module on a URL with a JSON
+    request("http://www.omdbapi.com/?t=" + value + "&y=&plot=short&apikey=" + keys.omdbKey.apiKey, function(error, data, body) {
+
+        // If there were no errors and the response code was 200 (i.e. the request was successful)...
+        if (!error && data.statusCode === 200) {
+            var movie = JSON.parse(body);
+
+            console.log('The Title of the movie is: ' + movie.Title);
+            console.log('The Year the movie came out is: ' + movie.Year);
+            console.log("The movie's rating is: " + movie.Rated);
+
+            var rating = 'no rating available';
+            for (i in movie.Ratings) {
+                if (movie.Ratings[i].Source == 'Rotten Tomatoes') {
+                    rating = movie.Ratings[i].Value;
+                    break;
+                }
+            }
+
+            console.log('Rotten Tomatoes Rating of the movie is: ' + rating);
+            console.log('The country where the movie was produced is: ' + movie.Country);
+            console.log('The Language of the movie is: ' + movie.Language);
+            console.log('The Plot of the movie is: ' + movie.Plot);
+            console.log('The Actors in the movie are: ' + movie.Actors);
+        }
+    });
+
+
+};
+
+/*
+ 
+-------------------------------------------------do-what-it-says-------------------------------------------------------------------  
+
+4. `node liri.js do-what-it-says`
+   
+   * Using the `fs` Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
+     
+     * It should run `spotify-this-song` for "I Want it That Way," as follows the text in `random.txt`.
+     
+     * Feel free to change the text in that document to test out the feature for other commands.
+
+   */
+//function so that Liri can take in the 'do-what-it-says' command
+function doWhatItSays() {
+    fs.readFile('random.txt', 'utf8', function(err, contents) {
+        var args = contents.split(',');
+        action = args[0];
+        value = args[1];
+        route();
+    });
+
+};
+
+//~end of Liri bot code
