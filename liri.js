@@ -97,7 +97,8 @@ function spotifyThisSong(value) {
     });
 
     if (value === undefined) {
-        value = 'The Sign';
+        value = "the-sign";
+        console.log(value);
     }
 
     
@@ -114,17 +115,21 @@ function spotifyThisSong(value) {
         query: value,
         limit: 1
     }, function(err, data){
-        console.log('I got ' + data.tracks.total + ' results!');
+        // console.log('I got ' + data.tracks.total + ' results!');
 
       if (!err) {
          
             var track = data.tracks.items[0];
-            console.log(track);
+            // console.log(track);
+             console.log('\nSong Name: ' + value);
+             console.log('\nArtist: ' + track.artists[0].name);
+             console.log('\nMusic Link: ' + track.external_urls.spotify);
+             console.log('\nAlbum Name: ' + track.album.name);
             // Print some information about the results
 
-            return console.log(`\nArtists: {track.artists[0].name} \nTrack: {value} \nPreview: {track.external_urls.spotify} \nAlbum: {track.album.name}`)
+            // return console.log(`\nArtists: {track.artists[0].name} \nTrack: {value} \nPreview: {track.external_urls.spotify} \nAlbum: {track.album.name}`)
         }else {
-          console.log('Song not found. Try another');
+          console.log('Sorry! Song not found. Please, check your spelling or try another song.');
 
         }
  
