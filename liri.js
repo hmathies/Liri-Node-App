@@ -14,24 +14,30 @@ var value = process.argv[3];
 create the functions
 use omdbRequest.js lesson Saturday 21 for OMDB
 use thursday bank.js for a lot of help*/
-switch (action) {
-    case "my-tweets":
-        myTweets();
-        break;
+route();
+function route(){ 
+    switch (action) {
+        case "my-tweets":
+            getMyTweets();
+            break;
 
-    case "spotify-this-song":
-        spotifyThisSong();
-        break;
+        case "spotify-this-song":
+            spotifyThisSong();
+            break;
 
-    case "movie-this":
-        movieThis();
-        break;
+        case "movie-this":
+            movieThis();
+            break;
 
-    case "do-what-it-says":
-        //??();
-        break;
-    default: //not sure what to put here
+        case "do-what-it-says":
+            doWhatItSays();
+            break;
 
+        default: 
+            console.log("You're wrong!");
+            break;
+
+    }
 }
 
 /* 8. Make it so liri.js can take in one of the following commands:
@@ -47,31 +53,37 @@ switch (action) {
 
 ------------------------------------------------------------Twitter---------------------------------------------------------------------
 
-1. `node liri.js my-tweets`
-
-   * This will show your last 20 tweets and when they were created at in your terminal/bash window.
-
 */
 
-//Adding my credentials. I'm using environmental variables to keep my private info safe. 
-var client = new Twitter({
-    consumer_key: process.env.TWITTER_CONSUMER_KEY,
-    consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
-    access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
-    access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
-});
+function getMyTweets() {
+ 
+var client = new Twitter(keys.twitterKeys);
+ 
+var params = {screen_name: 'DevRoddy'};
+client.get('statuses/user_timeline', params, function(error, tweets, response) {
+  if (error) {
+    console.log(error);
+  }else{
+    for (i in tweets){
 
-/*I'm confused on this...I'm hoping this will give me the tweets back and when they were created
-found the code below on npm twitter*/
-client.post('statuses/update', {
-    status: 'I am a tweet'
-}, function(error, tweet, response) {
-    if (!error) {
-        console.log(tweet);
+       console.log(tweets[i].text);
     }
-});
+   
+  }
 
-function myTweets() {
+  
+ 
+});
+    // Twitter.find(+keys.twitterKeys.consumer_key, function(error, response, body) {
+/*
+    if (!error && body.statusCode === 200) {
+        console.log(JSON.stringify(body, null, 2));
+    }
+*/
+    // });
+};
+
+function postMyTweets() {
     fs.readFile("keys.js", "utf8", function(err, data) {
         if (err) {
             return console.log(err);
@@ -128,67 +140,43 @@ function spotifyThisSong() {
 /*
 
 ----------------------------------------------------------OMDB-----------------------------------------------------------------
-
-3. `node liri.js movie-this '<movie name here>'`
-
-   
-
-   * If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
-     
-     * If you haven't watched "Mr. Nobody," then you should: <http://www.imdb.com/title/tt0485947/>
-     
-     * It's on Netflix!*/
+ */
 
 function movieThis() {
-fs.readFile("keys.js", "utf8", function(err, data) {
-        if (err) {
-            return console.log(err);
-        }
-    })
+
+if (value === undefined){
+  value = 'Mr. Nobody';
+}
     // We then run the request module on a URL with a JSON
 request("http://www.omdbapi.com/?t=" + value + "&y=&plot=short&apikey=" + keys.omdbKey.apiKey, function(error, data, body) {
 
     // If there were no errors and the response code was 200 (i.e. the request was successful)...
     if (!error && data.statusCode === 200) {
-        console.log(JSON.stringify(data, null, 2));
-
+        var movie = JSON.parse(body);
         /*check the data and then drill into it to display all of the movie details 
         display all of the movie data using console logs*/
-        console.log('The Title of the movie is: ' + JSON.parse(body).Title);
-        console.log('The Year the movie came out is: ' + JSON.parse(body).Year);
-        console.log("The movie's rating is: " + JSON.parse(body).Rated);
+        console.log('The Title of the movie is: ' + movie.Title);
+        console.log('The Year the movie came out is: ' + movie.Year);
+        console.log("The movie's rating is: " + movie.Rated);
         //the rotten tomatoes is the only one not working because i don't know how to code the space
-        console.log('Rotten Tomatoes Rating of the movie is: ' + JSON.parse(body).RottenTomatoes);
-        console.log('The country where the movie was produced is: ' + JSON.parse(body).Country);
-        console.log('The Language of the movie is: ' + JSON.parse(body).Language);
-        console.log('The Plot of the movie is: ' + JSON.parse(body).Plot);
-        console.log('The Actors in the movie are: ' + JSON.parse(body).Actors);
+        var rating = 'no rating available';
+        for(i in movie.Ratings){
+          if(movie.Ratings[i].Source == 'Rotten Tomatoes'){
+            rating = movie.Ratings[i].Value;
+            break;
+          }
+
+        }
+        console.log('Rotten Tomatoes Rating of the movie is: ' + rating);
+        console.log('The country where the movie was produced is: ' + movie.Country);
+        console.log('The Language of the movie is: ' + movie.Language);
+        console.log('The Plot of the movie is: ' + movie.Plot);
+        console.log('The Actors in the movie are: ' + movie.Actors);
     }
 });
 
-//my attempt at trying to display the Mr. Nobody info if the user leaves the movie title blank
-if (value === undefined) {
-    value = 'Mr.Nobody';
-    request('http://www.omdbapi.com/?t=' + value + '&y=&plot=short&apikey=' + keys.omdbKey.apiKey, function(error, response, body) {
 
-
-
-
-        /*check the data and then drill into it to display all of the movie details 
-        display all of the movie data using console logs*/
-        console.log('The Title of the movie is: ' + JSON.parse(body).Title);
-        console.log('The Year the movie came out is: ' + JSON.parse(body).Year);
-        console.log("The movie's rating is: " + JSON.parse(body).Rated);
-        //the rotten tomatoes is the only one not working because i don't know how to code the space
-        console.log('Rotten Tomatoes Rating of the movie is: ' + JSON.parse(body).RottenTomatoes);
-        console.log('The country where the movie was produced is: ' + JSON.parse(body).Country);
-        console.log('The Language of the movie is: ' + JSON.parse(body).Language);
-        console.log('The Plot of the movie is: ' + JSON.parse(body).Plot);
-        console.log('The Actors in the movie are: ' + JSON.parse(body).Actors);
-    });
-};
-
-};
+}
 
 /*
  
@@ -205,6 +193,11 @@ if (value === undefined) {
    */
 
 function doWhatItSays() {
-
+  fs.readFile('random.txt', 'utf8', function(err, contents) {
+    var args = contents.split(',');
+    action = args[0];
+    value = args[1];
+    route();
+  });
 
 };
