@@ -98,22 +98,14 @@ function spotifyThisSong(value) {
 
     if (value === undefined) {
         value = "the-sign";
-        console.log(value);
     }
 
-    
-
-/*things to look into:
-  1.) why isn't the full json data being displayed
-  2.) look into the items object
-  3.) look into why it isn't grabbing the user input ~~ perhaps need to declare it
-  4.) Do I need to do a request?
-*/
 
     spotify.search({
         type: 'track',
         query: value,
-        limit: 1
+        limit: 1,
+        offset:
     }, function(err, data){
         // console.log('I got ' + data.tracks.total + ' results!');
 
