@@ -1,6 +1,6 @@
 /*Heather Mathies October 2017
 liri bot code*/
-// the code to grab the data from keys.js. Then store the keys in a variable.
+// the code to grab the data from keys.js which is stored in variables.
 var fs = require('fs');
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
@@ -10,7 +10,7 @@ var keys = require('./keys.js');
 var action = process.argv[2];
 var value = process.argv[3];
 
-/*add switch statements that run the liri bot*/
+/* switch statements that run the liri bot*/
 route();
 
 function route() {
@@ -34,15 +34,12 @@ function route() {
         default:
             console.log("You're wrong!");
             break;
-
     }
 }
 
+/*------------------------------------------------------------Twitter---------------------------------------------------------------------
+function so that Liri can take in the 'my-tweets' command*/
 
-//------------------------------------------------------------Twitter---------------------------------------------------------------------
-
-
-//function so that Liri can take in the 'my-tweets' command
 function getMyTweets() {
 
     var client = new Twitter(keys.twitterKeys);
@@ -58,33 +55,13 @@ function getMyTweets() {
 
                 console.log(tweets[i].text);
             }
-
         }
-
     });
-
 };
 
-/*
------------------------------------------------------------Spotify---------------------------------------------------------------------
-
-2. `node liri.js spotify-this-song '<song name here>'`
-
-   * This will show the following information about the song in your terminal/bash window
-     
-     * Artist(s)
-     
-     * The song's name
-     
-     * A preview link of the song from Spotify
-     
-     * The album that the song is from
-
-   * If no song is provided then your program will default to "The Sign" by Ace of Base.
-   */
-
-//below is the basic working function that we used in our previous project
-
+/*-----------------------------------------------------------Spotify---------------------------------------------------------------------
+function so that Liri can take in the 'spotify-this-song' command which will show the artist(s), name of song, a link,
+ and album name*/
 
 function spotifyThisSong(value) {
 
@@ -96,61 +73,51 @@ function spotifyThisSong(value) {
         secret: keys.spotifyKeys.client_secret,
     });
 
+    /* If the user doesn't input a song then the program will default to "The Sign"*/
     if (value === undefined) {
-        value = "the-sign";
+        value = "The Sign";
     }
-
 
     spotify.search({
         type: 'track',
         query: value,
         limit: 1,
-        offset:
-    }, function(err, data){
-        // console.log('I got ' + data.tracks.total + ' results!');
 
-      if (!err) {
-         
+    }, function(err, data) {
+
+        if (!err) {
+
             var track = data.tracks.items[0];
-            // console.log(track);
-             console.log('\nSong Name: ' + value);
-             console.log('\nArtist: ' + track.artists[0].name);
-             console.log('\nMusic Link: ' + track.external_urls.spotify);
-             console.log('\nAlbum Name: ' + track.album.name);
-            // Print some information about the results
 
-            // return console.log(`\nArtists: {track.artists[0].name} \nTrack: {value} \nPreview: {track.external_urls.spotify} \nAlbum: {track.album.name}`)
-        }else {
-          console.log('Sorry! Song not found. Please, check your spelling or try another song.');
+            console.log('\nSong Name: ' + value +
+                '\nArtist: ' + track.artists[0].name +
+                '\nMusic Link: ' + track.external_urls.spotify +
+                '\nAlbum Name: ' + track.album.name);
+            console.log('\n-------------------------------------------');
 
+
+        } else {
+            console.log('Sorry! Song not found. Please, check your spelling or try another song.');
+            console.log('\n-------------------------------------------');
         }
- 
     });
+}
 
-  }
+/*----------------------------------------------------------OMDB-----------------------------------------------------------------
+ function so that Liri can take in the 'movie-this' command which will show the movie title, year released, rating, countries filmed,
+ languages, plot, and actors */
 
-
-
-/*
-
-----------------------------------------------------------OMDB-----------------------------------------------------------------
- */
-//function so that Liri can take in the 'movie-this' command
 function movieThis() {
 
     if (value === undefined) {
         value = 'Mr. Nobody';
     }
-    // We then run the request module on a URL with a JSON
+    // running the request module on a URL with a JSON
     request("http://www.omdbapi.com/?t=" + value + "&y=&plot=short&apikey=" + keys.omdbKey.apiKey, function(error, data, body) {
 
         // If there were no errors and the response code was 200 (i.e. the request was successful)...
         if (!error && data.statusCode === 200) {
             var movie = JSON.parse(body);
-
-            console.log('The Title of the movie is: ' + movie.Title);
-            console.log('The Year the movie came out is: ' + movie.Year);
-            console.log("The movie's rating is: " + movie.Rated);
 
             var rating = 'no rating available';
             for (i in movie.Ratings) {
@@ -160,6 +127,9 @@ function movieThis() {
                 }
             }
 
+            console.log('The Title of the movie is: ' + movie.Title);
+            console.log('The Year the movie came out is: ' + movie.Year);
+            console.log("The movie's rating is: " + movie.Rated);
             console.log('Rotten Tomatoes Rating of the movie is: ' + rating);
             console.log('The country where the movie was produced is: ' + movie.Country);
             console.log('The Language of the movie is: ' + movie.Language);
@@ -167,24 +137,10 @@ function movieThis() {
             console.log('The Actors in the movie are: ' + movie.Actors);
         }
     });
-
-
 };
 
-/*
- 
--------------------------------------------------do-what-it-says-------------------------------------------------------------------  
-
-4. `node liri.js do-what-it-says`
-   
-   * Using the `fs` Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
-     
-     * It should run `spotify-this-song` for "I Want it That Way," as follows the text in `random.txt`.
-     
-     * Feel free to change the text in that document to test out the feature for other commands.
-
-   */
-//function so that Liri can take in the 'do-what-it-says' command
+/*-------------------------------------------------do-what-it-says-------------------------------------------------------------------  
+function so that Liri can take in the 'do-what-it-says' command which will do whatever it says in the random.txt file*/
 function doWhatItSays() {
     fs.readFile('random.txt', 'utf8', function(err, contents) {
         var args = contents.split(',');
@@ -192,7 +148,6 @@ function doWhatItSays() {
         value = args[1];
         route();
     });
-
 };
 
 //~end of Liri bot code
