@@ -90,9 +90,9 @@ function spotifyThisSong(value) {
             var track = data.tracks.items[0];
 
             console.log('\nSong Name: ' + value +
-                '\nArtist: ' + track.artists[0].name +
-                '\nMusic Link: ' + track.external_urls.spotify +
-                '\nAlbum Name: ' + track.album.name);
+                        '\nArtist: ' + track.artists[0].name +
+                        '\nMusic Link: ' + track.external_urls.spotify +
+                        '\nAlbum Name: ' + track.album.name);
             console.log('\n-------------------------------------------');
 
 
