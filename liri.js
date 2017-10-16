@@ -78,14 +78,19 @@ function spotifyThisSong(value) {
         value = "The Sign";
     }
 
+
     spotify.search({
         type: 'track',
         query: value,
-        limit: 1,
+        limit: 20,
 
-    }, function(err, data) {
+    },
+
+
+    function(err, data) {
 
         if (!err) {
+    debugger;
 
             var track = data.tracks.items[0];
 
@@ -139,7 +144,7 @@ function movieThis() {
     });
 };
 
-/*-------------------------------------------------do-what-it-says-------------------------------------------------------------------  
+/*-------------------------------------------------do-what-it-says-------------------------------------------------------------------
 function so that Liri can take in the 'do-what-it-says' command which will do whatever it says in the random.txt file*/
 function doWhatItSays() {
     fs.readFile('random.txt', 'utf8', function(err, contents) {
