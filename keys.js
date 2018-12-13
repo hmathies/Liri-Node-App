@@ -1,19 +1,19 @@
 
 var twitterKeys = {
-  consumer_key: 'mX0o9QE56eMKmppl4uAFfrJfn',
-  consumer_secret: 'ac11WoxvkcpZThNod64qKziqW9pgrB1mhdqUrLgyuiVlq63WQa',
-  access_token_key: '915598833832382465-JDIfTO2fkbYIhtYHfrHmzQ9vTzrd2Fi',
-  access_token_secret: 'XvR8tKNkyKQYj6HDLklSLxGDODcvftMOHCiKAIaWcjavx',
+  consumer_key: process.env.CONSUMER_KEY,
+  consumer_secret: process.env.CONSUMER_SECRET,
+  access_token_key: process.env.ACCESS_TOKEN_KEY,
+  access_token_secret: process.env.ACCESS_TOKEN_SECRET,
 }
 
 
 var spotifyKeys = {
-    client_id: '3253473fa6634601855dc5b54fa0f24a',
-    client_secret: '0638d9139a534b91ac5581392f75a222'
+    client_id: process.env.SPOTIFY_ID,
+    client_secret: process.env.SPOTIFY_SECRET
 }
 
 var omdbKey = {
-    apiKey: '40e9cece'
+    apiKey: process.env.OMBD_KEY
 }
 
 
@@ -22,3 +22,4 @@ module.exports = {
     spotifyKeys,
     omdbKey
 }
+

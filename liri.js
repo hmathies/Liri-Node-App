@@ -1,6 +1,7 @@
 /*Heather Mathies October 2017
 liri bot code*/
 // the code to grab the data from keys.js which is stored in variables.
+require("dotenv").config();
 var fs = require("fs");
 var Twitter = require("twitter");
 var Spotify = require("node-spotify-api");
